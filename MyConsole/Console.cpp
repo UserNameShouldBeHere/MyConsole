@@ -67,6 +67,11 @@ void Console::help() {
 	std::cout << "Поменять местоположение файла" << std::endl;
 
 	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 3));
+	std::cout << "    shutdown <параметр>         ";
+	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 6));
+	std::cout << "Выключает компьютер" << std::endl;
+
+	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 3));
 	std::cout << "    cmd <параметр>              ";
 	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 6));
 	std::cout << "Открыть командную строку" << std::endl;
@@ -228,6 +233,14 @@ void Console::replace(std::string key) {
 	}
 }
 
+void Console::shutdown(std::string key) {
+	if (key.length() == 0) system("shutdown /s /t 1");
+	else {
+		if (atoi(key.c_str()) >= 0 && atoi(key.c_str()) <= 315360000) system(("shutdown /s /t " + key).c_str());
+		else print_error("Введите корректное значение задержки в мсек.");
+	}
+}
+
 void Console::open_file(std::string file_name) {
 	std::string file_path;
 	if (file_name.length() == 0) print_error("Введите название файла");
@@ -336,6 +349,13 @@ void Console::run() {
 				if (is_command("replace", command, true) == true) {
 					possible_command = true;
 					replace(command.erase(0, 8));
+				}
+
+			// выключает комп
+			if (tmp_command == "shutdown")
+				if (is_command("shutdown", command, true) == true) {
+					possible_command = true;
+					shutdown(command.erase(0, 9));
 				}
 
 			// перейти на диск D

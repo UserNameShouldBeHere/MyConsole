@@ -32,6 +32,7 @@ class Console {
 	void open_git(std::string);
 	void rename(std::string);
 	void replace(std::string);
+	void shutdown(std::string);
 
 public:
 	Console(std::string path) : current_path(path) {}
