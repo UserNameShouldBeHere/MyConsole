@@ -169,7 +169,7 @@ void Console::change_directory(std::string new_dir) {
 		new_current += new_dir;
 		if (fs::is_regular_file(new_current) == true)
 			print_error("Âû םו למזועו ןונויעט ג פאיכ");
-		else if (fs::is_directory(new_current) == true) {
+		else if (fs::is_directory(new_current) == true && new_dir != ".") {
 			if (fs::exists(new_current + '/') == true) {
 				new_current += '/';
 				current_path = new_current;
