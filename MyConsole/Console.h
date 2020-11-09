@@ -7,6 +7,9 @@
 namespace fs = boost::filesystem;
 
 class Console {
+	static Console* console;
+	Console(std::string main_path) : current_path(main_path) {}
+
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	std::string current_path;
 
@@ -36,8 +39,7 @@ class Console {
 	void shutdown(std::string);
 
 public:
-	Console(std::string path) : current_path(path) {}
-	Console() : current_path("C:/Users/USER/Downloads/") {}
+	static Console* create_console(std::string main_path);
 
 	void run();
 };

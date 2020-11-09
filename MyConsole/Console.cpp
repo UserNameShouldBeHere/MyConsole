@@ -2,6 +2,15 @@
 
 //#define DEBUG
 
+Console* Console::console = nullptr;
+
+Console* Console::create_console(std::string main_path) {
+	if (console == nullptr)
+		console = new Console(main_path);
+
+	return console;
+}
+
 std::string Console::transfer_string(std::string command) {
 	if (command[command.length() - 1] != ' ') command += " ";
 	std::string new_string = command.erase(command.find_first_of(" "));

@@ -7,10 +7,9 @@ int main() {
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
 
-	Console filesystem("C:/Users/USER/Downloads/");
+	Console* filesystem = Console::create_console("C:/Users/USER/Downloads/");
 
-	filesystem.run();
-
+	filesystem->run();
 
 	return 0;
 }
