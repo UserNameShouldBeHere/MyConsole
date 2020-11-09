@@ -20,6 +20,7 @@ class Console {
 	void create_directory(std::string);
 	void change_directory(std::string);
 	void change_disk(std::string);
+	void copy(std::string);
 
 	void print_main_path();
 	void print_error(std::string);
