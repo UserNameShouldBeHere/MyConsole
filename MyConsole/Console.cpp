@@ -5,10 +5,14 @@
 Console* Console::console = nullptr;
 
 Console* Console::create_console(std::string main_path) {
-	if (console == nullptr)
+	if (console == nullptr) {
 		console = new Console(main_path);
-
-	return console;
+		return console;
+	}
+	else {
+		std::cerr << "You can build only one console in programm" << std::endl;
+		return console;
+	}
 }
 
 std::string Console::transfer_string(std::string command) {
@@ -35,88 +39,35 @@ void Console::print_main_path() {
 	std::cout << '>';
 }
 
-void Console::print_error(std::string message) {
+void Console::print_help_message(std::string command, std::string description) {
+	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 3));
+	std::cout << command;
+	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 6));
+	std::cout << description << std::endl;
+}
+
+void Console::print_error_message(std::string message) {
 	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 12));
 	std::cout << "Ошибка: " << message << std::endl << std::endl;
 	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 7));
 }
 
 void Console::help() {
-	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 3));
-	std::cout << "    cd <директория>             ";
-	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 6));
-	std::cout << "Переход в другую директорию" << std::endl;
-
-	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 3));
-	std::cout << "    size <файл>                 ";
-	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 6));
-	std::cout << "Выводи размер файла" << std::endl;
-
-	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 3));
-	std::cout << "    crd <директория>            ";
-	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 6));
-	std::cout << "Создает новую директорию" << std::endl;
-
-	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 3));
-	std::cout << "    dir                         ";
-	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 6));
-	std::cout << "Выводи список всех файлов в директории" << std::endl;
-
-	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 3));
-	std::cout << "    open <файл>                 ";
-	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 6));
-	std::cout << "Открывает указанный файл" << std::endl;
-
-	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 3));
-	std::cout << "    rename                      ";
-	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 6));
-	std::cout << "Поменять имя файла/директории" << std::endl;
-
-	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 3));
-	std::cout << "    replace                     ";
-	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 6));
-	std::cout << "Поменять местоположение файла" << std::endl;
-
-	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 3));
-	std::cout << "    copy                        ";
-	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 6));
-	std::cout << "Копирует файлы в необходимую папку" << std::endl;
-
-	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 3));
-	std::cout << "    shutdown <параметр>         ";
-	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 6));
-	std::cout << "Выключает компьютер" << std::endl;
-
-	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 3));
-	std::cout << "    cmd <параметр>              ";
-	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 6));
-	std::cout << "Открыть командную строку" << std::endl;
-
-	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 3));
-	std::cout << "    np                          ";
-	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 6));
-	std::cout << "Открыть блокнот" << std::endl;
-
-	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 3));
-	std::cout << "    g                           ";
-	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 6));
-	std::cout << "Открыть галю" << std::endl;
-
-	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 3));
-	std::cout << "    vs                          ";
-	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 6));
-	std::cout << "Открыть visual studio" << std::endl;
-
-	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 3));
-	std::cout << "    git                         ";
-	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 6));
-	std::cout << "Открыть git-cmd" << std::endl;
-
-	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 3));
-	std::cout << "    exit                        ";
-	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 6));
-	std::cout << "Выйти из программы" << std::endl;
-	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 7));
+	print_help_message("    cd <директория>             ", "Переход в другую директорию");
+	print_help_message("    cmd <параметр>              ", "Открыть командную строку");
+	print_help_message("    copy                        ", "Копирует файлы в необходимую папку");
+	print_help_message("    crd <директория>            ", "Создает новую директорию");
+	print_help_message("    dir                         ", "Выводи список всех файлов в директории");
+	print_help_message("    exit                        ", "Выйти из программы");
+	print_help_message("    g                           ", "Открыть галю");
+	print_help_message("    git                         ", "Открыть git-cmd");
+	print_help_message("    np                          ", "Открыть блокнот");
+	print_help_message("    open <файл>                 ", "Открывает указанный файл");
+	print_help_message("    size <файл>                 ", "Выводи размер файла");
+	print_help_message("    rename                      ", "Поменять имя файла/директории");
+	print_help_message("    replace                     ", "Поменять местоположение файла");
+	print_help_message("    shutdown <параметр>         ", "Выключает компьютер");
+	print_help_message("    vs                          ", "Открыть visual studio");
 }
 
 void Console::size(std::string file) {
@@ -126,7 +77,7 @@ void Console::size(std::string file) {
 		std::string new_path = current_path + file;
 		if (fs::exists(new_path) == true) {
 			if (fs::is_directory(new_path))
-				print_error("Вы находитесь в директории. Выберите файл");
+				print_error_message("Вы находитесь в директории. Выберите файл");
 			else
 				std::cout << "Размер файла составляет " << fs::file_size(new_path) << " байт" << std::endl;
 		}
@@ -168,7 +119,7 @@ void Console::change_directory(std::string new_dir) {
 	else if (new_dir != ".." && new_dir != "") {
 		new_current += new_dir;
 		if (fs::is_regular_file(new_current) == true)
-			print_error("Вы не можете перейти в файл");
+			print_error_message("Вы не можете перейти в файл");
 		else if (fs::is_directory(new_current) == true && new_dir != ".") {
 			if (fs::exists(new_current + '/') == true) {
 				new_current += '/';
@@ -234,10 +185,7 @@ void Console::copy(std::string key) {
 #endif
 
 				if (file_is_in_folder == false) {
-					if (fs::is_directory(old_path) == true)
-						fs::copy_directory(old_path, new_path);
-					else
-						fs::copy_file(old_path, new_path);
+					fs::copy(old_path, new_path);
 				}
 				else
 					throw std::invalid_argument("Файл уже существует данной папке");
@@ -535,7 +483,7 @@ void Console::run() {
 		}
 
 		catch (std::invalid_argument ex) {
-			print_error(ex.what());
+			print_error_message(ex.what());
 		}
 	}
 	std::cout << "До связи" << std::endl;

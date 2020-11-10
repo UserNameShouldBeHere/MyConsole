@@ -26,7 +26,8 @@ class Console {
 	void copy(std::string key);
 
 	void print_main_path();
-	void print_error(std::string message);
+	void print_help_message(std::string command, std::string description);
+	void print_error_message(std::string message);
 
 	void open_file(std::string file_name);
 	void open_cmd(std::string key);
