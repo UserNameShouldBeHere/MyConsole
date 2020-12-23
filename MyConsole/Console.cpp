@@ -1,7 +1,5 @@
 #include "Console.h"
 
-//#define DEBUG
-
 Console* Console::console = nullptr;
 
 Console* Console::create_console(std::string main_path) {
@@ -249,7 +247,7 @@ void Console::replace(std::string key) {
 						file_name.erase(0, file_name.find_last_of("/") + 1);
 						if (path.path().filename() == file_name)
 							file_is_in_folder = true;
-#ifdef DEBUG
+#ifdef _DEBUG
 						std::cout << path.path().filename() << std::endl;
 						std::cout << file_name << std::endl;
 #endif
@@ -258,7 +256,7 @@ void Console::replace(std::string key) {
 					std::string tmp_path = old_path;
 					new_path += tmp_path.erase(0, tmp_path.find_last_of("/") + 1);
 
-#ifdef DEBUG
+#ifdef _DEBUG
 					std::cout << old_path << std::endl;
 					std::cout << new_path << std::endl;
 #endif
