@@ -395,21 +395,21 @@ void Console::run() {
 						rename(command.erase(0, 7));
 					}
 
-				// перемещает файл
+				// переместить файл
 				if (tmp_command == "replace")
 					if (is_command("replace", command, true) == true) {
 						possible_command = true;
 						replace(command.erase(0, 8));
 					}
 
-				// копирует файл
+				// копировать файл
 				if (tmp_command == "copy")
 					if (is_command("copy", command, true) == true) {
 						possible_command = true;
 						copy(command.erase(0, 5));
 					}
 
-				// выключает комп
+				// выключить комп
 				if (tmp_command == "shutdown")
 					if (is_command("shutdown", command, true) == true) {
 						possible_command = true;
@@ -437,7 +437,7 @@ void Console::run() {
 						open_file(command.erase(0, 5));
 					}
 
-				// открыть блокнот
+				// открыть консоль
 				if (tmp_command == "cmd")
 					if (is_command("cmd", command, true) == true) {
 						possible_command = true;
@@ -486,5 +486,11 @@ void Console::run() {
 			print_error_message(ex.what());
 		}
 	}
-	std::cout << "До связи" << std::endl;
+
+
+	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 8));
+	std::cout << "=================" << std::endl;
+	std::cout << "\\  До связи...  /" << std::endl;
+	std::cout << " ===============" << std::endl;
+	Sleep(1000);
 }
