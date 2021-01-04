@@ -281,8 +281,8 @@ void Console::shutdown(std::string key) {
 	if (key.length() == 0) 
 		system("shutdown /s /t 60000");
 	else {
-		if (atoi(key.c_str()) >= 0 && atoi(key.c_str()) <= 315360000)
-			system(("shutdown /s /t " + key).c_str());
+		if (atoi(key.c_str()) >= 0 && atoi(key.c_str()) <= 315360)
+			system(("shutdown /s /t " + std::to_string(std::atoi(key.c_str()) * 1000)).c_str());
 		else 
 			throw std::invalid_argument("¬ведите корректное значение задержки в мсек.");
 	}
