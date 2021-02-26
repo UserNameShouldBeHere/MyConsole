@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <Windows.h>
 #include <boost/filesystem.hpp>
+#include <algorithm>
 
 namespace fs = boost::filesystem;
 
@@ -13,10 +14,14 @@ class Console {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	std::string current_path;
 
+	// вспомогательные команды
 	std::string transfer_string(std::string command);
 
 	bool is_command(std::string command, std::string input, bool pass_context);
 
+	void copy_directory(std::string old_path, std::string new_path);
+
+	// команды
 	void help();
 	void size(std::string file);
 	void get_files();

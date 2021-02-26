@@ -30,6 +30,17 @@ bool Console::is_command(std::string command, std::string input, bool pass_conte
 	}
 }
 
+void Console::copy_directory(std::string old_path, std::string new_path) {
+	for (fs::directory_entry& path : fs::directory_iterator(old_path)) {
+		if (fs::is_directory(path) == true) {
+			fs::copy(path, new_path + "\\" + path.path().filename().string());
+			copy_directory(path.path().string(), new_path + "\\" + path.path().filename().string());
+		}
+		else
+			fs::copy(path, new_path + "\\" + path.path().filename().string());
+	}
+}
+
 void Console::print_main_path() {
 	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 10));
 	std::cout << current_path;
@@ -57,7 +68,7 @@ void Console::help() {
 	print_help_message("    crd <директория>            ", "Создает новую директорию");
 	print_help_message("    dir                         ", "Выводи список всех файлов в директории");
 	print_help_message("    exit                        ", "Выйти из программы");
-	print_help_message("    g                           ", "Открыть галю");
+	print_help_message("    g <запрос>                  ", "Открыть галю");
 	print_help_message("    git                         ", "Открыть git-cmd");
 	print_help_message("    np                          ", "Открыть блокнот");
 	print_help_message("    open <файл>                 ", "Открывает указанный файл");
@@ -110,17 +121,17 @@ void Console::create_directory(std::string new_dir_name) {
 void Console::change_directory(std::string new_dir) {
 	std::string new_current = current_path;
 	if (new_dir == ".." && (current_path.length() > 3)) {
-		new_current.erase(new_current.find_last_of('/'));
-		new_current.erase(new_current.find_last_of('/'));
-		current_path = new_current + '/';
+		new_current.erase(new_current.find_last_of('\\'));
+		new_current.erase(new_current.find_last_of('\\'));
+		current_path = new_current + '\\';
 	}
 	else if (new_dir != ".." && new_dir != "") {
 		new_current += new_dir;
 		if (fs::is_regular_file(new_current) == true)
 			print_error_message("Вы не можете перейти в файл");
 		else if (fs::is_directory(new_current) == true && new_dir != ".") {
-			if (fs::exists(new_current + '/') == true) {
-				new_current += '/';
+			if (fs::exists(new_current + '\\') == true) {
+				new_current += '\\';
 				current_path = new_current;
 			}
 			else
@@ -132,8 +143,8 @@ void Console::change_directory(std::string new_dir) {
 }
 
 void Console::change_disk(std::string disk) {
-	if (current_path[0] == 'C' && disk == "D") current_path = "D:/";
-	if (current_path[0] == 'D' && disk == "C") current_path = "C:/";
+	if (current_path[0] == 'C' && disk == "D") current_path = "D:\\";
+	if (current_path[0] == 'D' && disk == "C") current_path = "C:\\";
 }
 
 void Console::copy(std::string key) {
@@ -160,30 +171,42 @@ void Console::copy(std::string key) {
 				new_path = new_directory;
 
 			if (fs::exists(new_path)) {
-				if (new_path[new_path.length() - 1] != '/')
-					new_path += "/";
+				if (new_path[new_path.length() - 1] != '\\')
+					new_path += "\\";
 
 				for (fs::directory_entry& path : fs::directory_iterator(new_path)) {
 					std::string file_name = old_path;
-					file_name.erase(0, file_name.find_last_of("/") + 1);
+					file_name.erase(0, file_name.find_last_of("\\") + 1);
 					if (path.path().filename() == file_name)
 						file_is_in_folder = true;
-#ifdef DEBUG
+#ifdef _DEBUG
 					std::cout << path.path().filename() << std::endl;
 					std::cout << file_name << std::endl;
 #endif
 				}
 
 				std::string tmp_path = old_path;
-				new_path += tmp_path.erase(0, tmp_path.find_last_of("/") + 1);
+				new_path += tmp_path.erase(0, tmp_path.find_last_of("\\") + 1);
 
-#ifdef DEBUG
+#ifdef _DEBUG
 				std::cout << old_path << std::endl;
 				std::cout << new_path << std::endl;
 #endif
 
 				if (file_is_in_folder == false) {
-					fs::copy(old_path, new_path);
+					if (fs::is_directory(old_path) == true) {
+
+#ifdef _DEBUG
+						std::cout << static_cast<int>(fs::is_directory(old_path)) << std::endl;
+						std::cout << old_path << std::endl;
+						std::cout << new_path << std::endl;
+#endif
+
+						fs::copy(old_path, new_path);
+						copy_directory(old_path, new_path);
+					}
+					else
+						fs::copy(old_path, new_path);
 				}
 				else
 					throw std::invalid_argument("Файл уже существует данной папке");
@@ -239,12 +262,12 @@ void Console::replace(std::string key) {
 
 			if (fs::exists(new_path)) {
 				if (fs::is_directory(new_path) == true) {
-					if (new_path[new_path.length() - 1] != '/')
-						new_path += "/";
+					if (new_path[new_path.length() - 1] != '\\')
+						new_path += "\\";
 
 					for (fs::directory_entry& path : fs::directory_iterator(new_path)) {
 						std::string file_name = old_path;
-						file_name.erase(0, file_name.find_last_of("/") + 1);
+						file_name.erase(0, file_name.find_last_of("\\") + 1);
 						if (path.path().filename() == file_name)
 							file_is_in_folder = true;
 #ifdef _DEBUG
@@ -254,7 +277,7 @@ void Console::replace(std::string key) {
 					}
 
 					std::string tmp_path = old_path;
-					new_path += tmp_path.erase(0, tmp_path.find_last_of("/") + 1);
+					new_path += tmp_path.erase(0, tmp_path.find_last_of("\\") + 1);
 
 #ifdef _DEBUG
 					std::cout << old_path << std::endl;
@@ -305,9 +328,9 @@ void Console::open_file(std::string file_name) {
 
 void Console::open_cmd(std::string key) {
 	if (key.length() == 0)
-		ShellExecuteA(NULL, NULL, "C:/Windows/System32/cmd.exe", NULL, NULL, SW_RESTORE);
+		ShellExecuteA(NULL, NULL, "C:\\Windows\\System32\\cmd.exe", NULL, NULL, SW_RESTORE);
 	if (key == "-admin")
-		ShellExecuteA(NULL, "runas", "C:/Windows/System32/cmd.exe", NULL, NULL, SW_RESTORE);
+		ShellExecuteA(NULL, "runas", "C:\\Windows\\System32\\cmd.exe", NULL, NULL, SW_RESTORE);
 }
 
 void Console::open_notepad(std::string key) {
@@ -317,17 +340,36 @@ void Console::open_notepad(std::string key) {
 
 void Console::open_google(std::string key) {
 	if (key.length() == 0)
-		ShellExecuteA(NULL, "open", "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe", NULL, NULL, SW_SHOWMAXIMIZED);
+		ShellExecuteA(NULL, "open", "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe", NULL, NULL, SW_SHOWMAXIMIZED);
+	else {
+		while (key.find_first_of('+') != -1) {
+			std::string address_left = key;
+			address_left.erase(address_left.find_first_of("+"));
+			std::string address_right = key;
+			address_right.erase(0, address_right.find_first_of("+") + 1);
+
+			key = address_left + "%2B" + address_right;
+
+#ifdef _DEBUG
+			std::cout << key << std::endl;
+#endif
+		}
+
+		std::string address = "https://www.google.com/search?q=" + key;
+
+		std::replace(address.begin(), address.end(), ' ', '+');
+		ShellExecuteA(NULL, "open", address.c_str(), NULL, NULL, SW_SHOWMAXIMIZED);
+	}
 }
 
 void Console::open_visual_studio(std::string key) {
 	if (key.length() == 0)
-		ShellExecuteA(NULL, "open", "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/devenv.exe", NULL, NULL, SW_RESTORE);
+		ShellExecuteA(NULL, "open", "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\IDE\\devenv.exe", NULL, NULL, SW_RESTORE);
 }
 
 void Console::open_git(std::string key) {
 	if (key.length() == 0)
-		ShellExecuteA(NULL, "open", "C:/Program Files/Git/git-cmd.exe", NULL, NULL, SW_RESTORE);
+		ShellExecuteA(NULL, "open", "C:\\Program Files\\Git\\git-cmd.exe", NULL, NULL, SW_RESTORE);
 }
 
 void Console::run() {
